@@ -10,13 +10,12 @@ public class Base64 {
         byte[] retorno;
         if (s.charAt(s.length() - 2) == '=') {
             retorno = new byte[(s.length() / 4 - 1) * 3 + 1];
+        } else if (s.charAt(s.length() - 1) == '=') {
+            retorno = new byte[(s.length() / 4 - 1) * 3 + 2];
         } else {
-            if (s.charAt(s.length() - 1) == '=') {
-                retorno = new byte[(s.length() / 4 - 1) * 3 + 2];
-            } else {
-                retorno = new byte[s.length() / 4 * 3];
-            }
+            retorno = new byte[s.length() / 4 * 3];
         }
+
         int i = 0;
 
         for (int j = 0; i < s.length() - 4; j += 3) {

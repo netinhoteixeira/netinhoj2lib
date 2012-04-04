@@ -21,10 +21,10 @@ public class BrowserDetect {
 
     public BrowserDetect(String userAgent, String acceptLanguage) {
         initialize();
-        if (userAgent != null) {
+        if ((userAgent != null) && (!userAgent.isEmpty())) {
             setUserAgent(userAgent.toLowerCase());
         }
-        if (acceptLanguage != null) {
+        if ((acceptLanguage != null) && (!acceptLanguage.isEmpty())) {
             setLanguage(acceptLanguage.toLowerCase());
         }
         setLocale();
