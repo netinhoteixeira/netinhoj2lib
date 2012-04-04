@@ -1,5 +1,6 @@
 package info.netinho.util;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +8,11 @@ public class Text {
 
     public static boolean hasContent(String s) {
         return (s != null) && (s.trim().length() > 0);
+    }
+
+    public static boolean hasString(String $haystack, String $needle) {
+        String found = $haystack.substring(0, $haystack.indexOf($needle) + 1);
+        return !found.isEmpty();
     }
 
     public static String retirarAcentos(String s) {
@@ -136,5 +142,74 @@ public class Text {
             list.add(str.substring(start, i));
         }
         return (String[]) (String[]) list.toArray(new String[list.size()]);
+    }
+
+    public static String utf8encode(String string) throws UnsupportedEncodingException {
+        return new String(string.getBytes("ISO-8859-1"), "UTF-8");
+    }
+
+    /**
+     * Responsavel por reduzir o nome com a quantidade de caracteres informada,
+     * sem cortar pedaco do nome e simplificando os sobrenomes: Pedro P. Souza
+     *
+     * @author Tayron Miranda <falecom@tayronmiranda.com.br>
+     * @author Francisco Ernesto Teixeira <fco.ernesto@gmail.com>
+     * @param {string} $texto Texto
+     * @param {string} $tamanho Quantidade de caracteres
+     * @return Texto limitado aos caracteres sem cortar palavras abrevia os
+     * nomes do meio
+     * @since 02/04/2012
+     */
+    public static String reduzirNome(String texto, int tamanho) {
+        String nome;
+        String meio = new String();
+        String sobrenome = new String();
+
+        texto = texto.trim();
+
+        // Se o nome for maior que o permitido
+        if (texto.length() > (tamanho - 2)) {
+            // $texto = strip_tags($texto);
+
+            // Pego o primeiro nome
+            String[] palavras = texto.split(" ");
+            nome = palavras[0];
+
+            // Pego o ultimo nome
+            // $palavas = explode(' ', $texto);
+            sobrenome = palavras[palavras.length - 1];
+
+            // Vejo qual e a posicao do ultimo nome
+            int ult_posicao = palavras.length - 1;
+
+            // Crio uma variavel para receber os nomes do meio abreviados
+            // $meio = '';
+
+            // Listo todos os nomes do meios e abrevio eles
+            for (int a = 1; a < ult_posicao; a++) {
+                // Enquanto o tamanho do nome nao atingir o limite de caracteres
+                // completo com o nomes do meio abreviado
+                if ((nome + " " + meio + " " + sobrenome).length() <= tamanho) {
+                    String letra = "" + palavras[a].charAt(0);
+                    meio += " " + letra.toUpperCase() + ".";
+
+                    // preenche uma variavel com a quantidade de termos restantes
+                    String restante = new String();
+                    for (int b = a + 1; b < ult_posicao; b++) {
+                        restante += " " + palavras[b];
+                    }
+
+                    // verifica se dessa forma ja conseguiu abreviar o suficiente
+                    if ((nome + " " + meio + restante + " " + sobrenome).length() <= tamanho) {
+                        meio = meio + restante;
+                        break;
+                    }
+                }
+            }
+        } else {
+            nome = texto;
+        }
+
+        return (nome + meio + " " + sobrenome).trim();
     }
 }

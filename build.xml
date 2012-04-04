@@ -72,18 +72,22 @@
 
     -->   
     <!-- ### BEGIN OBFUSCATION TARGETS ###-->
+    <tstamp>
+        <format property="datahora" pattern="yyyyMMddhhmmss" locale="br"/>
+    </tstamp>
+    
     <target name="-post-jar">
         <taskdef resource="proguard/ant/task.properties"
-            classpath="tool/proguard.jar" />
+                 classpath="tool/proguard.jar" />
 
         <echo message="Obfuscating ${dist.jar}..." />
         <mkdir dir="${dist.dir}/obfuscated" />
         <proguard printmapping="${dist.dir}/obfuscated/${ant.project.name}.map"
-            renamesourcefileattribute="SourceFile" ignorewarnings="true">
+                  renamesourcefileattribute="SourceFile" ignorewarnings="true">
 
             <!-- Specify the input jars, output jars, and library jars. -->
             <injar  file="${dist.jar}" />
-            <outjar file="${dist.dir}/obfuscated/${ant.project.name}.jar" />
+            <outjar file="${dist.dir}/obfuscated/${ant.project.name}-${datahora}.jar" />
 
             <libraryjar path="${javac.classpath}" />
             <!-- it must has jre folder at end of path -->
@@ -106,11 +110,11 @@
             <!-- Preserve all .class method names. -->
             <keepclassmembernames access="public">
                 <method type   = "java.lang.Class"
-                    name       = "class$"
-                    parameters = "java.lang.String" />
+                        name       = "class$"
+                        parameters = "java.lang.String" />
                 <method type   = "java.lang.Class"
-                    name       = "class$"
-                    parameters = "java.lang.String,boolean" />
+                        name       = "class$"
+                        parameters = "java.lang.String,boolean" />
             </keepclassmembernames>
 
             <!-- Preserve all native method names and the names of their classes. -->
@@ -121,13 +125,13 @@
             <!-- Preserve the methods that are required in all enumeration classes. -->
             <keepclassmembers extends="java.lang.Enum">
                 <method access = "public static"
-                    type       = "**[]"
-                    name       = "values"
-                    parameters = "" />
+                        type       = "**[]"
+                        name       = "values"
+                        parameters = "" />
                 <method access = "public static"
-                    type       = "**"
-                    name       = "valueOf"
-                    parameters = "java.lang.String" />
+                        type       = "**"
+                        name       = "valueOf"
+                        parameters = "java.lang.String" />
             </keepclassmembers>
 
             <!--
@@ -139,28 +143,28 @@
             <keepnames implements="java.io.Serializable"/>
             <keepclassmembers implements="java.io.Serializable">
                 <field access   = "final"
-                    type        = "long"
-                    name        = "serialVersionUID" />
+                       type        = "long"
+                       name        = "serialVersionUID" />
                 <field access   = "!static !transient"
-                    name        = "**"/>
+                       name        = "**"/>
                 <field access   = "!private"
-                    name        = "**"/>
+                       name        = "**"/>
                 <method access  = "!private"
-                    name        = "**"/>
+                        name        = "**"/>
                 <method access  = "private"
-                    type        = "void"
-                    name        = "writeObject"
-                    parameters  = "java.io.ObjectOutputStream" />
+                        type        = "void"
+                        name        = "writeObject"
+                        parameters  = "java.io.ObjectOutputStream" />
                 <method access  = "private"
-                    type        = "void"
-                    name        = "readObject"
-                    parameters  = "java.io.ObjectOutputStream" />
+                        type        = "void"
+                        name        = "readObject"
+                        parameters  = "java.io.ObjectOutputStream" />
                 <method type    = "java.lang.Object"
-                    name        = "writeReplace"
-                    parameters  = "" />
+                        name        = "writeReplace"
+                        parameters  = "" />
                 <method type    = "java.lang.Object"
-                    name        = "readResolve"
-                    parameters  = "" />
+                        name        = "readResolve"
+                        parameters  = "" />
             </keepclassmembers>
             <!--
             Your application may contain more items that need to be preserved;
