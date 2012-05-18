@@ -44,18 +44,20 @@ public class BrowserDetect {
     }
 
     private void setCompany() {
-        if (this.userAgent.indexOf("msie") > -1) {
-            this.company = "Microsoft";
-        } else if (this.userAgent.indexOf("opera") > -1) {
-            this.company = "Opera Software";
-        } else if (this.userAgent.indexOf("mozilla") > -1) {
-            this.company = "Mozilla Foundation";
-        } else if (this.userAgent.indexOf("mac os") > -1) {
-            this.company = "Apple Inc.";
-        } else if (this.userAgent.indexOf("android") > -1) {
-            this.company = "Google Inc.";
-        } else {
-            this.company = "unknown";
+        if (this.userAgent != null) {
+            if (this.userAgent.indexOf("msie") > -1) {
+                this.company = "Microsoft";
+            } else if (this.userAgent.indexOf("opera") > -1) {
+                this.company = "Opera Software";
+            } else if (this.userAgent.indexOf("mozilla") > -1) {
+                this.company = "Mozilla Foundation";
+            } else if (this.userAgent.indexOf("mac os") > -1) {
+                this.company = "Apple Inc.";
+            } else if (this.userAgent.indexOf("android") > -1) {
+                this.company = "Google Inc.";
+            } else {
+                this.company = "unknown";
+            }
         }
     }
 
@@ -153,7 +155,7 @@ public class BrowserDetect {
                 } else {
                     this.buildVersion = Integer.parseInt(tmpString);
                 }
-            } catch (NumberFormatException nfex) {
+            } catch (NumberFormatException ex) {
             }
         }
     }
@@ -179,26 +181,28 @@ public class BrowserDetect {
     }
 
     private void setOS() {
-        if (this.userAgent.indexOf("win") > -1) {
-            if ((this.userAgent.indexOf("windows 95") > -1) || (this.userAgent.indexOf("win95") > -1)) {
-                this.os = "Windows 95";
+        if (this.userAgent != null) {
+            if (this.userAgent.indexOf("win") > -1) {
+                if ((this.userAgent.indexOf("windows 95") > -1) || (this.userAgent.indexOf("win95") > -1)) {
+                    this.os = "Windows 95";
+                }
+                if ((this.userAgent.indexOf("windows 98") > -1) || (this.userAgent.indexOf("win98") > -1)) {
+                    this.os = "Windows 98";
+                }
+                if ((this.userAgent.indexOf("windows nt") > -1) || (this.userAgent.indexOf("winnt") > -1)) {
+                    this.os = "Windows NT";
+                }
+                if ((this.userAgent.indexOf("win16") > -1) || (this.userAgent.indexOf("windows 3.") > -1)) {
+                    this.os = "Windows 3.x";
+                }
+                if (this.userAgent.indexOf("windows nt 6.1") > -1) {
+                    this.os = "Windows 7";
+                }
+            } else if (this.userAgent.indexOf("linux") > -1) {
+                this.os = "Linux";
+            } else if (this.userAgent.indexOf("like mac os") > -1) {
+                this.os = "iOS " + this.userAgent.substring(this.userAgent.indexOf(" os ") + 4, this.userAgent.indexOf("like mac os") - 1);
             }
-            if ((this.userAgent.indexOf("windows 98") > -1) || (this.userAgent.indexOf("win98") > -1)) {
-                this.os = "Windows 98";
-            }
-            if ((this.userAgent.indexOf("windows nt") > -1) || (this.userAgent.indexOf("winnt") > -1)) {
-                this.os = "Windows NT";
-            }
-            if ((this.userAgent.indexOf("win16") > -1) || (this.userAgent.indexOf("windows 3.") > -1)) {
-                this.os = "Windows 3.x";
-            }
-            if (this.userAgent.indexOf("windows nt 6.1") > -1) {
-                this.os = "Windows 7";
-            }
-        } else if (this.userAgent.indexOf("linux") > -1) {
-            this.os = "Linux";
-        } else if (this.userAgent.indexOf("like mac os") > -1) {
-            this.os = "iOS " + this.userAgent.substring(this.userAgent.indexOf(" os ") + 4, this.userAgent.indexOf("like mac os") - 1);
         }
     }
 
@@ -210,7 +214,7 @@ public class BrowserDetect {
         String prefLanguage = acceptLanguage;
 
         if (prefLanguage != null) {
-            String tmplanguage = null;
+            String tmplanguage;
             StringTokenizer st = new StringTokenizer(prefLanguage, ",");
 
             int elements = st.countTokens();
@@ -244,19 +248,35 @@ public class BrowserDetect {
     }
 
     public boolean isAppleiPod() {
-        return this.userAgent.indexOf("ipod") != -1;
+        if (this.userAgent != null) {
+            return this.userAgent.indexOf("ipod") != -1;
+        } else {
+            return false;
+        }
     }
 
     public boolean isAppleiPhone() {
-        return this.userAgent.indexOf("iphone") != -1;
+        if (this.userAgent != null) {
+            return this.userAgent.indexOf("iphone") != -1;
+        } else {
+            return false;
+        }
     }
 
     public boolean isAppleiPad() {
-        return this.userAgent.indexOf("ipad") != -1;
+        if (this.userAgent != null) {
+            return this.userAgent.indexOf("ipad") != -1;
+        } else {
+            return false;
+        }
     }
 
     public boolean isGoogleAndroid() {
-        return this.userAgent.indexOf("android") != -1;
+        if (this.userAgent != null) {
+            return this.userAgent.indexOf("android") != -1;
+        } else {
+            return false;
+        }
     }
 
     public boolean isMobile() {
@@ -264,23 +284,43 @@ public class BrowserDetect {
     }
 
     public boolean isMozillaFirefox() {
-        return this.userAgent.indexOf("firefox") != -1;
+        if (this.userAgent != null) {
+            return this.userAgent.indexOf("firefox") != -1;
+        } else {
+            return false;
+        }
     }
 
     public boolean isMicrosoftInternetExplorer() {
-        return this.userAgent.indexOf("msie") != -1;
+        if (this.userAgent != null) {
+            return this.userAgent.indexOf("msie") != -1;
+        } else {
+            return false;
+        }
     }
 
     public boolean isGoogleChrome() {
-        return this.userAgent.indexOf("chrome") != -1;
+        if (this.userAgent != null) {
+            return this.userAgent.indexOf("chrome") != -1;
+        } else {
+            return false;
+        }
     }
 
     public boolean isOpera() {
-        return this.userAgent.indexOf("opera") != -1;
+        if (this.userAgent != null) {
+            return this.userAgent.indexOf("opera") != -1;
+        } else {
+            return false;
+        }
     }
 
     public boolean isAppleSafari() {
-        return (this.userAgent.indexOf("safari") != -1) && (this.userAgent.indexOf("chrome") == -1);
+        if (this.userAgent != null) {
+            return (this.userAgent.indexOf("safari") != -1) && (this.userAgent.indexOf("chrome") == -1);
+        } else {
+            return false;
+        }
     }
 
     public boolean isOldBrowser() {
