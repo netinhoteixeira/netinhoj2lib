@@ -1,16 +1,54 @@
 package info.netinho.util;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 public class Date {
 
-    public static String getDateTime(String format) {
-        DateFormat dateFormat = new SimpleDateFormat(format);
-        java.util.Date date = new java.util.Date();
-        return dateFormat.format(date);
+    private static DatatypeFactory df = null;
+
+    static {
+        try {
+            df = DatatypeFactory.newInstance();
+        } catch (DatatypeConfigurationException dce) {
+            throw new IllegalStateException("Exception while obtaining DatatypeFactory instance", dce);
+        }
+    }
+
+    /**
+     * Converts a java.util.Date into an instance of XMLGregorianCalendar
+     *
+     * @param date Instance of java.util.Date or a null reference
+     * @return XMLGregorianCalendar instance whose value is based upon the value
+     * in the date parameter. If the date parameter is null then this method
+     * will simply return null.
+     */
+    public static XMLGregorianCalendar asXMLGregorianCalendar(java.util.Date date) {
+        if (date == null) {
+            return null;
+        } else {
+            GregorianCalendar gc = new GregorianCalendar();
+            gc.setTime(date);
+            return df.newXMLGregorianCalendar(gc);
+        }
+    }
+
+    /**
+     * Converts an XMLGregorianCalendar to an instance of java.util.Date
+     *
+     * @param xgc Instance of XMLGregorianCalendar or a null reference
+     * @return java.util.Date instance whose value is based upon the value in
+     * the xgc parameter. If the xgc parameter is null then this method will
+     * simply return null.
+     */
+    public static java.util.Date asDate(XMLGregorianCalendar xgc) {
+        return (xgc == null) ? null : xgc.toGregorianCalendar().getTime();
     }
 
     public static String getXMLGregorianCalendarDateToString(XMLGregorianCalendar date) {
@@ -44,6 +82,12 @@ public class Date {
         }
 
         return hora + ":" + minuto + ":" + segundo;
+    }
+
+    public static String getDateTime(String format) {
+        DateFormat dateFormat = new SimpleDateFormat(format);
+        java.util.Date date = new java.util.Date();
+        return dateFormat.format(date);
     }
 
     public static String getMonthName(int month) {
@@ -153,10 +197,26 @@ public class Date {
     }
 
     public static String formatDate(java.util.Date date, String format) {
-        DateFormat df = new SimpleDateFormat(format);
+        DateFormat sdf = new SimpleDateFormat(format);
+        sdf.setLenient(false);
+        return sdf.format(date);
+    }
 
-        df.setLenient(false);
+    public static java.util.Date parseDate(String date) {
+        return parseDate(date, "dd/MM/yyyy");
+    }
 
-        return df.format(date);
+    public static java.util.Date parseDate(String date, String format) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+        if ((date != null) && (!date.isEmpty())) {
+            try {
+                return sdf.parse(date);
+            } catch (ParseException ex) {
+                return null;
+            }
+        }
+
+        return null;
     }
 }

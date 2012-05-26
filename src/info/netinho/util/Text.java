@@ -144,8 +144,16 @@ public class Text {
         return (String[]) (String[]) list.toArray(new String[list.size()]);
     }
 
+    public static boolean isEmpty(String s) {
+        return (s == null) || (s.trim().isEmpty());
+    }
+
     public static String utf8encode(String string) throws UnsupportedEncodingException {
         return new String(string.getBytes("ISO-8859-1"), "UTF-8");
+    }
+
+    public static String utf8decode(String string) throws UnsupportedEncodingException {
+        return new String(string.getBytes("UTF-8"), "ISO-8859-1");
     }
 
     /**
