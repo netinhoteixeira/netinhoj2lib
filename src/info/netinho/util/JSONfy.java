@@ -1,8 +1,9 @@
 package info.netinho.util;
 
-import com.google.gson.Gson;
+import com.google.gson.*;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Type;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -39,6 +40,7 @@ public class JSONfy {
         return instance != null;
     }
 
+    @Override
     public Object clone() throws CloneNotSupportedException {
         throw new CloneNotSupportedException();
     }
@@ -84,5 +86,18 @@ public class JSONfy {
         } finally {
             out.close();
         }
+    }
+
+    public static Gson create() {
+        GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(java.util.Date.class, new JsonDeserializer<java.util.Date>() {
+
+            @Override
+            public java.util.Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
+                return info.netinho.util.Date.parseDate(json.getAsJsonPrimitive().getAsString());
+            }
+        });
+
+        return builder.create();
     }
 }
