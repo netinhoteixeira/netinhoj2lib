@@ -111,7 +111,7 @@ public class BrowserDetect {
         } else {
             int tmpPos;
             String tmpString = this.userAgent.substring(tmpPos = this.userAgent.indexOf("/") + 1, tmpPos + this.userAgent.indexOf(" ")).trim();
-            this.version = (!tmpString.isEmpty()) ? tmpString.substring(0, tmpString.indexOf(" ")) : new String();
+            this.version = !tmpString.isEmpty() ? (tmpString.indexOf(" ") != -1 ? tmpString.substring(0, tmpString.indexOf(" ")) : tmpString) : new String();
         }
 
         if (!this.version.isEmpty()) {
