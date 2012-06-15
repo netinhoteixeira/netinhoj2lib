@@ -6,6 +6,10 @@ import java.util.List;
 
 public class Text {
 
+    public static void main(String[] params) {
+        System.err.println(info.netinho.util.Text.reduzirNome("RAIMUNDO  FELIX ALVES DE OLIVEIRA", 30));
+    }
+
     public static boolean hasContent(String s) {
         return (s != null) && (s.trim().length() > 0);
     }
@@ -173,7 +177,14 @@ public class Text {
         String meio = new String();
         String sobrenome = new String();
 
+        // Sanitiza o texto
         texto = texto.trim();
+        // FIX: java.lang.StringIndexOutOfBoundsException: String index out of range: 0
+        // at java.lang.String.charAt(String.java:695)
+        // at info.netinho.util.Text.reduzirNome(Text.java:205)
+        while (texto.indexOf("  ") > -1) {
+            texto = texto.replaceAll("  ", " ");
+        }
 
         // Se o nome for maior que o permitido
         if (texto.length() > (tamanho - 2)) {
