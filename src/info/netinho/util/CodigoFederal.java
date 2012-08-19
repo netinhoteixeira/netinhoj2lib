@@ -5,6 +5,11 @@ public class CodigoFederal {
     public static final int CPF = 11;
     public static final int CNPJ = 14;
 
+    public static void main(String[] args) {
+        System.out.println(adicionarMascaraCPF("05486864400"));
+        System.out.println(adicionarMascaraCEP("70237040"));
+    }
+
     private static boolean validarCPFCNPJ(String codigo, int tipo) {
         boolean retorno = false;
 
@@ -17,12 +22,12 @@ public class CodigoFederal {
         int _07 = 0;
         int _08 = 0;
         int _09 = 0;
-        int _10 = 0;
-        int _11 = 0;
-        int _12 = 0;
+        int _10;
+        int _11;
+        int _12;
         int d01 = 0;
         int d02 = 0;
-        String digitado = "";
+        String digitado = new String();
 
         codigo = Number.getOnlyNumbers(codigo);
         int tamanho = codigo.length();
@@ -84,7 +89,25 @@ public class CodigoFederal {
         return validarCPFCNPJ(codigo, 11);
     }
 
+    public static String adicionarMascaraCPF(String codigo) {
+        if ((codigo != null) && (codigo.length() == 11)) {
+            codigo = codigo.substring(0, 3) + "." + codigo.substring(3, 6) + "."
+                    + codigo.substring(6, 9) + "-" + codigo.substring(9, 11);
+        }
+
+        return codigo;
+    }
+
     public static boolean validarCNPJ(String codigo) {
         return validarCPFCNPJ(codigo, 14);
+    }
+
+    public static String adicionarMascaraCEP(String codigo) {
+        if ((codigo != null) && (codigo.length() == 8)) {
+            codigo = codigo.substring(0, 2) + "." + codigo.substring(2, 5) + "-"
+                    + codigo.substring(5, 8);
+        }
+
+        return codigo;
     }
 }

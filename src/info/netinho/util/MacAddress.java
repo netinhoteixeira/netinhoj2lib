@@ -4,11 +4,7 @@
  */
 package info.netinho.util;
 
-import java.net.InetAddress;
-import java.net.InterfaceAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -43,9 +39,9 @@ public class MacAddress {
             }
 
             Enumeration<NetworkInterface> theIntfList = NetworkInterface.getNetworkInterfaces();
-            List<InterfaceAddress> theAddrList = null;
-            NetworkInterface theIntf = null;
-            InetAddress theAddr = null;
+            List<InterfaceAddress> theAddrList;
+            NetworkInterface theIntf;
+            InetAddress theAddr;
 
             while (theIntfList.hasMoreElements()) {
                 theIntf = theIntfList.nextElement();
@@ -164,7 +160,7 @@ public class MacAddress {
 
         if (ip.equals("127.0.0.1")) {
             Enumeration<NetworkInterface> theIntfList = NetworkInterface.getNetworkInterfaces();
-            List<InterfaceAddress> theAddrList = null;
+            List<InterfaceAddress> theAddrList;
 
             while (theIntfList.hasMoreElements()) {
                 theAddrList = theIntfList.nextElement().getInterfaceAddresses();
@@ -186,16 +182,16 @@ public class MacAddress {
         InetAddress address = InetAddress.getByName(ip);
 
         /*
-         * Get NetworkInterface for the current host and then read the
-         * hardware address.
+         * Get NetworkInterface for the current host and then read the hardware
+         * address.
          */
         NetworkInterface ni = NetworkInterface.getByInetAddress(address);
         if (ni != null) {
             byte[] mac = ni.getHardwareAddress();
             if (mac != null) {
                 /*
-                 * Extract each array of mac address and convert it to hexa with the
-                 * following format 08-00-27-DC-4A-9E.
+                 * Extract each array of mac address and convert it to hexa with
+                 * the following format 08-00-27-DC-4A-9E.
                  */
                 for (int i = 0; i < mac.length; i++) {
                     result += String.format("%02X%s", mac[i], (i < mac.length - 1) ? ":" : "");

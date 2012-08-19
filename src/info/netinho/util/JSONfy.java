@@ -90,6 +90,13 @@ public class JSONfy {
 
     public static Gson create() {
         GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(java.util.Date.class, new JsonSerializer<java.util.Date>() {
+
+            @Override
+            public JsonElement serialize(java.util.Date src, Type typeOfSrc, JsonSerializationContext context) {
+                return src == null ? null : new JsonPrimitive(info.netinho.util.Date.formatDate(src));
+            }
+        });
         builder.registerTypeAdapter(java.util.Date.class, new JsonDeserializer<java.util.Date>() {
 
             @Override
@@ -98,6 +105,6 @@ public class JSONfy {
             }
         });
 
-        return builder.create();
+        return builder.setPrettyPrinting().create();
     }
 }
