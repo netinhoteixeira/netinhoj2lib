@@ -109,9 +109,13 @@ public class BrowserDetect {
                 this.version = tmpString;
             }
         } else {
-            int tmpPos;
-            String tmpString = this.userAgent.substring(tmpPos = this.userAgent.indexOf("/") + 1, tmpPos + this.userAgent.indexOf(" ")).trim();
-            this.version = !tmpString.isEmpty() ? (tmpString.indexOf(" ") != -1 ? tmpString.substring(0, tmpString.indexOf(" ")) : tmpString) : new String();
+            try {
+                int tmpPos;
+                String tmpString = this.userAgent.substring(tmpPos = this.userAgent.indexOf("/") + 1, tmpPos + this.userAgent.indexOf(" ")).trim();
+                this.version = !tmpString.isEmpty() ? (tmpString.indexOf(" ") != -1 ? tmpString.substring(0, tmpString.indexOf(" ")) : tmpString) : new String();
+            } catch (StringIndexOutOfBoundsException ex) {
+                this.version = new String();
+            }
         }
 
         if (!this.version.isEmpty()) {

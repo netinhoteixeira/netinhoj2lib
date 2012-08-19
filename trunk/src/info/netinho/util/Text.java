@@ -83,10 +83,10 @@ public class Text {
             while (i < len) {
                 if (Character.isWhitespace(str.charAt(i))) {
                     if ((match) || (preserveAllTokens)) {
-                        lastMatch = true;
+                        //lastMatch = true;
                         if (sizePlus1++ == max) {
                             i = len;
-                            lastMatch = false;
+                            //lastMatch = false;
                         }
                         list.add(str.substring(start, i));
                         match = false;
@@ -105,10 +105,10 @@ public class Text {
             while (i < len) {
                 if (str.charAt(i) == sep) {
                     if ((match) || (preserveAllTokens)) {
-                        lastMatch = true;
+                        //lastMatch = true;
                         if (sizePlus1++ == max) {
                             i = len;
-                            lastMatch = false;
+                            //lastMatch = false;
                         }
                         list.add(str.substring(start, i));
                         match = false;
@@ -125,10 +125,10 @@ public class Text {
             while (i < len) {
                 if (separatorChars.indexOf(str.charAt(i)) >= 0) {
                     if ((match) || (preserveAllTokens)) {
-                        lastMatch = true;
+                        //lastMatch = true;
                         if (sizePlus1++ == max) {
                             i = len;
-                            lastMatch = false;
+                            //lastMatch = false;
                         }
                         list.add(str.substring(start, i));
                         match = false;
