@@ -15,6 +15,9 @@ public class BrowserDetect {
     protected int minorVersion;
     protected int buildVersion;
     protected String os;
+    protected String osArch;
+    protected String engine;
+    protected String engineVersion;
     protected String language = "en";
     protected Locale locale;
     private HashMap<String, String> supportedLanguages;
@@ -41,11 +44,16 @@ public class BrowserDetect {
         setName();
         setVersion();
         setOS();
+        setOSArch();
+        setEngine();
+        setEngineVersion();
     }
 
     private void setCompany() {
         if (this.userAgent != null) {
-            if (this.userAgent.indexOf("msie") > -1) {
+            if ((this.userAgent.indexOf("android") > -1) || (this.userAgent.indexOf("chrome") > -1)) {
+                this.company = "Google Inc.";
+            } else if (this.userAgent.indexOf("msie") > -1) {
                 this.company = "Microsoft";
             } else if (this.userAgent.indexOf("opera") > -1) {
                 this.company = "Opera Software";
@@ -53,8 +61,6 @@ public class BrowserDetect {
                 this.company = "Mozilla Foundation";
             } else if (this.userAgent.indexOf("mac os") > -1) {
                 this.company = "Apple Inc.";
-            } else if (this.userAgent.indexOf("android") > -1) {
-                this.company = "Google Inc.";
             } else {
                 this.company = "unknown";
             }
@@ -66,7 +72,11 @@ public class BrowserDetect {
     }
 
     private void setName() {
-        if (this.company.equals("Microsoft")) {
+        if ((this.company.equals("Google Inc.")) && (this.userAgent.indexOf("android") > -1)) {
+            this.name = "Android";
+        } else if ((this.company.equals("Google Inc.")) && (this.userAgent.indexOf("chrome") > -1)) {
+            this.name = "Google Chrome";
+        } else if (this.company.equals("Microsoft")) {
             this.name = "Microsoft Internet Explorer";
         } else if (this.company.equals("Netscape Communications")) {
             this.name = "Netscape Navigator";
@@ -76,8 +86,6 @@ public class BrowserDetect {
             this.name = "Mozilla Firefox";
         } else if ((this.company.equals("Apple Inc.")) && (this.userAgent.indexOf("safari") > -1)) {
             this.name = "Safari";
-        } else if ((this.company.equals("Google Inc.")) && (this.userAgent.indexOf("android") > -1)) {
-            this.name = "Android";
         } else {
             this.name = "unknown";
         }
@@ -88,7 +96,10 @@ public class BrowserDetect {
     }
 
     private void setVersion() {
-        if (this.company.equals("Microsoft")) {
+        if (isGoogleChrome()) {
+            String tmpString = this.userAgent.substring(this.userAgent.indexOf("chrome") + 7).trim();
+            this.version = tmpString.substring(0, tmpString.indexOf(" ")).trim();
+        } else if (this.company.equals("Microsoft")) {
             String str = this.userAgent.substring(this.userAgent.indexOf("msie") + 5);
             this.version = str.substring(0, str.indexOf(";"));
         } else if (isMozillaFirefox()) {
@@ -98,9 +109,6 @@ public class BrowserDetect {
             } else {
                 this.version = tmpString;
             }
-        } else if (isGoogleChrome()) {
-            String tmpString = this.userAgent.substring(this.userAgent.indexOf("chrome") + 7).trim();
-            this.version = tmpString.substring(0, tmpString.indexOf(" ")).trim();
         } else if (isOpera() || isAppleSafari() || isGoogleAndroid()) {
             String tmpString = this.userAgent.substring(this.userAgent.indexOf("version") + 8).trim();
             if (tmpString.indexOf(" ") > 0) {
@@ -186,7 +194,9 @@ public class BrowserDetect {
 
     private void setOS() {
         if (this.userAgent != null) {
-            if (this.userAgent.indexOf("win") > -1) {
+            if (this.userAgent.indexOf("linux") > -1) {
+                this.os = "Linux";
+            } else if (this.userAgent.indexOf("win") > -1) {
                 if ((this.userAgent.indexOf("windows 95") > -1) || (this.userAgent.indexOf("win95") > -1)) {
                     this.os = "Windows 95";
                 }
@@ -202,8 +212,6 @@ public class BrowserDetect {
                 if (this.userAgent.indexOf("windows nt 6.1") > -1) {
                     this.os = "Windows 7";
                 }
-            } else if (this.userAgent.indexOf("linux") > -1) {
-                this.os = "Linux";
             } else if (this.userAgent.indexOf("like mac os") > -1) {
                 this.os = "iOS " + this.userAgent.substring(this.userAgent.indexOf(" os ") + 4, this.userAgent.indexOf("like mac os") - 1);
             }
@@ -212,6 +220,47 @@ public class BrowserDetect {
 
     public String getOS() {
         return this.os;
+    }
+
+    private void setOSArch() {
+        if (this.userAgent != null) {
+            if (this.userAgent.indexOf("x86_64") > -1) {
+                this.osArch = "64";
+            } else {
+                this.osArch = "32";
+            }
+            this.osArch += " bits";
+        }
+    }
+
+    public String getOSArch() {
+        return this.osArch;
+    }
+
+    private void setEngine() {
+        if (this.isGecko()) {
+            this.engine = "Gecko";
+        } else if (this.isAppleWebKit()) {
+            this.engine = "AppleWebKit";
+        } else {
+            this.engine = "unknown";
+        }
+    }
+
+    public String getEngine() {
+        return this.engine;
+    }
+
+    private void setEngineVersion() {
+        // TODO: Detectar versão do motor
+        this.engineVersion = new String();
+        //this.geckoVersion = ( (this.isGecko) ? ua.substring( (ua.lastIndexOf('gecko/') + 6), (ua.lastIndexOf('gecko/') + 14) ) : -1 );
+        //this.equivalentMozilla = ( (this.isGecko) ? parseFloat( ua.substring( ua.indexOf('rv:') + 3 ) ) : -1 );
+        //this.appleWebKitVersion = ( (this.isAppleWebKit) ? parseFloat( ua.substring( ua.indexOf('applewebkit/') + 12) ) : -1 );
+    }
+
+    public String getEngineVersion() {
+        return this.engineVersion;
     }
 
     private void setLanguage(String acceptLanguage) {
@@ -249,6 +298,22 @@ public class BrowserDetect {
 
     public Locale getLocale() {
         return this.locale;
+    }
+
+    public boolean isGecko() {
+        if (this.userAgent != null) {
+            return this.userAgent.indexOf("gecko") != -1 && this.userAgent.indexOf("safari") == -1;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isAppleWebKit() {
+        if (this.userAgent != null) {
+            return this.userAgent.indexOf("applewebkit") != -1;
+        } else {
+            return false;
+        }
     }
 
     public boolean isAppleiPod() {
