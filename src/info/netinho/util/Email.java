@@ -120,15 +120,10 @@ public class Email {
         String password = session.getProperty("mail.password");
 
         Message message = new MimeMessage(session);
-
         message.setFrom(new InternetAddress(session.getProperty("mail.from")));
-
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario, false));
-
         message.setSubject(assunto);
-
         message.setSentDate(new Date());
-
         message.setContent(mensagem.toString(), "text/plain");
 
         Transport transport = session.getTransport(protocol);
