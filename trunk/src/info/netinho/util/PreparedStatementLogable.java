@@ -627,12 +627,10 @@ public class PreparedStatementLogable
         return this.stmt.isWrapperFor(type);
     }
 
-    @Override
     public void closeOnCompletion() throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override
     public boolean isCloseOnCompletion() throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }

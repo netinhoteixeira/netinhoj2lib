@@ -4,6 +4,8 @@ import java.io.PrintWriter;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.mail.AuthenticationFailedException;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -17,6 +19,63 @@ import javax.naming.NamingException;
 import org.apache.commons.collections.iterators.IteratorEnumeration;
 
 public class Email {
+
+    private String server;
+    private Integer port;
+    private Boolean starttls;
+    private String user;
+    private String password;
+
+    public Email() {
+        this.server = "smtp.gmail.com";
+        this.port = 465;
+        this.starttls = true;
+        this.user = "no-reply@afrafepsaude.com.br";//"myuser@gmail.com";
+        this.password = "kIxW71jh";//"mypassword";
+    }
+
+    public Email(String server, Integer port, Boolean starttls, String user, String password) {
+        this.server = server;
+        this.port = port;
+        this.starttls = starttls;
+        this.user = user;
+        this.password = password;
+    }
+
+    public void send(String from, String to, String subject, String message) throws MessagingException {
+        send(from, to, subject, message, "text/plain; charset=UTF-8");//ISO-8859-1");
+    }
+
+    public void send(String from, String to, String subject, String message, String mime) throws MessagingException {
+        java.util.Properties props = new java.util.Properties();
+
+        props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.starttls.enable", this.starttls ? "true" : "false");
+        props.put("mail.smtp.host", this.server);
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.user", this.user);
+        props.put("mail.smtp.password", this.password);
+        props.put("mail.smtp.port", Integer.toString(this.port));
+        props.put("mail.smtp.socketFactory.port", Integer.toString(this.port));
+        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        props.put("mail.smtp.socketFactory.fallback", "false");
+        props.put("mail.mime.charset", "UTF-8");//"ISO-8859-1");
+
+        SimpleAuth auth = new SimpleAuth(this.user, this.password);
+        Session session = Session.getInstance(props, auth);
+
+        Message msg = new MimeMessage(session);
+        msg.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
+        msg.setFrom(new InternetAddress(from));
+        msg.setSubject(subject);
+        msg.setContent(message, mime);
+
+        Transport tr = session.getTransport("smtp");
+        tr.connect(this.server, this.port, this.user, this.password);
+        msg.saveChanges();
+        tr.sendMessage(msg, msg.getAllRecipients());
+        tr.close();
+    }
 
     public static void sendSimpleMail(String mailSession, String destinatario, String assunto, String mensagem)
             throws NamingException, AddressException, MessagingException {
@@ -62,15 +121,19 @@ public class Email {
         try {
             sendSimpleMail(mailSession, destinatario, assunto, mensagem);
             retorno = true;
-        } catch (NamingException ne) {
-            out.print(ne.getMessage());
-        } catch (AddressException ae) {
-            out.print(ae.getMessage());
-        } catch (AuthenticationFailedException afe) {
+        } catch (NamingException ex) {
+            out.print(ex.getMessage());
+            Logger.getLogger(Email.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (AddressException ex) {
+            out.print(ex.getMessage());
+            Logger.getLogger(Email.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (AuthenticationFailedException ex) {
             out.print("Falha ao tentar autenticar no servidor de e-mail.\n");
-            out.print(afe.getMessage());
-        } catch (MessagingException me) {
-            out.print(me.getMessage());
+            out.print(ex.getMessage());
+            Logger.getLogger(Email.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (MessagingException ex) {
+            out.print(ex.getMessage());
+            Logger.getLogger(Email.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return retorno;
