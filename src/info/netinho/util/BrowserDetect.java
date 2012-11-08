@@ -57,10 +57,10 @@ public class BrowserDetect {
                 this.company = "Microsoft";
             } else if (this.userAgent.indexOf("opera") > -1) {
                 this.company = "Opera Software";
+            } else if (this.isAppleSafari()) {
+                this.company = "Apple Inc.";
             } else if (this.userAgent.indexOf("mozilla") > -1) {
                 this.company = "Mozilla Foundation";
-            } else if (this.userAgent.indexOf("mac os") > -1) {
-                this.company = "Apple Inc.";
             } else {
                 this.company = "unknown";
             }
@@ -125,8 +125,13 @@ public class BrowserDetect {
                 this.version = new String();
             }
         }
+        
 
         if (!this.version.isEmpty()) {
+            if (this.version.startsWith("/")) {
+                this.version = this.version.substring(1);
+            }
+            
             String tmpString = this.version;
             this.mainVersion = 0;
             this.moderateVersion = 0;
@@ -242,6 +247,10 @@ public class BrowserDetect {
             this.engine = "Gecko";
         } else if (this.isAppleWebKit()) {
             this.engine = "AppleWebKit";
+        } else if (this.isTrident()) {
+            this.engine = "Trident";
+        } else if (this.isPresto()) {
+            this.engine = "Presto";
         } else {
             this.engine = "unknown";
         }
@@ -252,11 +261,19 @@ public class BrowserDetect {
     }
 
     private void setEngineVersion() {
-        // TODO: Detectar versão do motor
-        this.engineVersion = new String();
-        //this.geckoVersion = ( (this.isGecko) ? ua.substring( (ua.lastIndexOf('gecko/') + 6), (ua.lastIndexOf('gecko/') + 14) ) : -1 );
-        //this.equivalentMozilla = ( (this.isGecko) ? parseFloat( ua.substring( ua.indexOf('rv:') + 3 ) ) : -1 );
-        //this.appleWebKitVersion = ( (this.isAppleWebKit) ? parseFloat( ua.substring( ua.indexOf('applewebkit/') + 12) ) : -1 );
+        if (!this.engine.equals("unknown")) {
+            this.engineVersion = this.userAgent.substring(this.userAgent.indexOf(this.engine.toLowerCase()) + this.engine.length() + 1);
+            if (this.engineVersion.indexOf(";") > -1) {
+                this.engineVersion = this.engineVersion.substring(0, this.engineVersion.indexOf(";"));
+            }
+            if (this.engineVersion.indexOf(")") > -1) {
+                this.engineVersion = this.engineVersion.substring(0, this.engineVersion.indexOf(")"));
+            }
+            if (this.engineVersion.indexOf(" ") > -1) {
+                this.engineVersion = this.engineVersion.substring(0, this.engineVersion.indexOf(" "));
+            }
+            this.engineVersion = this.engineVersion.trim();
+        }
     }
 
     public String getEngineVersion() {
@@ -316,6 +333,22 @@ public class BrowserDetect {
         }
     }
 
+    public boolean isTrident() {
+        if (this.userAgent != null) {
+            return this.userAgent.indexOf("trident") != -1;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isPresto() {
+        if (this.userAgent != null) {
+            return this.userAgent.indexOf("presto") != -1;
+        } else {
+            return false;
+        }
+    }
+
     public boolean isAppleiPod() {
         if (this.userAgent != null) {
             return this.userAgent.indexOf("ipod") != -1;
@@ -349,7 +382,24 @@ public class BrowserDetect {
     }
 
     public boolean isMobile() {
-        return this.isAppleiPod() || this.isAppleiPad() || this.isAppleiPhone() || this.isGoogleAndroid();
+        return (this.userAgent.indexOf("mobile") != -1) || this.isAppleiPod() || this.isAppleiPhone() || this.isAppleiPad() || this.isGoogleAndroid();
+    }
+    
+    public String getMobile() {
+        if (this.isMobile()) {
+            if (this.isAppleiPod()) {
+                return "iPod";
+            } else if (this.isAppleiPhone()) {
+                return "iPhone";
+            } else if (this.isAppleiPad()) {
+                return "iPad";
+            } else if (this.isGoogleAndroid()) {
+                return "Android";
+            } else {
+                return "unknown";
+            }
+        }
+        return null;
     }
 
     public boolean isMozillaFirefox() {

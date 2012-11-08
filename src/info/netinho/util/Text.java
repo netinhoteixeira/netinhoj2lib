@@ -73,7 +73,7 @@ public class Text {
         if (len == 0) {
             return new String[0];
         }
-        List list = new ArrayList();
+        List<String> list = new ArrayList<String>();
         int sizePlus1 = 1;
         int i = 0;
         int start = 0;
