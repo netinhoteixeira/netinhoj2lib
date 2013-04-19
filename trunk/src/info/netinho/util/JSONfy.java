@@ -4,6 +4,8 @@ import com.google.gson.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -91,17 +93,26 @@ public class JSONfy {
     public static Gson create() {
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(java.util.Date.class, new JsonSerializer<java.util.Date>() {
-
             @Override
             public JsonElement serialize(java.util.Date src, Type typeOfSrc, JsonSerializationContext context) {
                 return src == null ? null : new JsonPrimitive(info.netinho.util.Date.formatDate(src));
             }
         });
         builder.registerTypeAdapter(java.util.Date.class, new JsonDeserializer<java.util.Date>() {
-
             @Override
             public java.util.Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
-                return info.netinho.util.Date.parseDate(json.getAsJsonPrimitive().getAsString());
+                String date = json.getAsJsonPrimitive().getAsString();
+                if (!date.contains(":")) {
+                    date += " 15:00:00";
+                }
+
+                SimpleDateFormat spf = new SimpleDateFormat("dd/MM/yyyy kk:mm:ss");
+                try {
+                    return spf.parse(date);
+                } catch (ParseException e) {
+                    //e.printStackTrace();
+                    return null;
+                }
             }
         });
 
