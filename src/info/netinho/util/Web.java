@@ -26,7 +26,7 @@ public class Web {
     }
 
     public static String justFileName(String fileName) {
-        String retorno = "";
+        String retorno;
 
         int index = fileName.lastIndexOf('/');
         if (index >= 0) {
@@ -96,12 +96,70 @@ public class Web {
             Logger.getLogger(Web.class.getName()).log(Level.SEVERE, null, ioe);
         } finally {
             try {
-                is.close();
+                if (is != null) {
+                    is.close();
+                }
             } catch (IOException ioe) {
                 Logger.getLogger(Web.class.getName()).log(Level.SEVERE, null, ioe);
             }
         }
 
         return bi;
+    }
+
+    /**
+     *
+     * @param targetURL
+     * @param urlParameters
+     * @return
+     */
+    public static String executePost(String targetURL, String urlParameters) {
+        URL url;
+        HttpURLConnection connection = null;
+
+        try {
+            // Create connection
+            url = new URL(targetURL);
+
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type",
+                    "application/x-www-form-urlencoded");
+
+            connection.setRequestProperty("Content-Length", ""
+                    + Integer.toString(urlParameters.getBytes().length));
+            connection.setRequestProperty("Content-Language", "en-US");
+
+            connection.setUseCaches(false);
+            connection.setDoInput(true);
+            connection.setDoOutput(true);
+
+            // send request
+            DataOutputStream wr = new DataOutputStream(
+                    connection.getOutputStream());
+            wr.writeBytes(urlParameters);
+            wr.flush();
+            wr.close();
+
+            // get Response
+            InputStream is = connection.getInputStream();
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+            String line;
+            StringBuilder response = new StringBuilder();
+            while ((line = rd.readLine()) != null) {
+                response.append(line);
+                response.append('\r');
+            }
+            rd.close();
+            return response.toString();
+        } catch (Exception ex) {
+            Logger.getLogger(Web.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+
+            return null;
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
     }
 }

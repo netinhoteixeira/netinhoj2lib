@@ -3,6 +3,7 @@ package info.netinho.util;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.RandomStringUtils;
 
 public class Text {
 
@@ -100,6 +101,7 @@ public class Text {
                 i++;
             }
         }
+
         if (separatorChars.length() == 1) {
             char sep = separatorChars.charAt(0);
             while (i < len) {
@@ -230,5 +232,14 @@ public class Text {
         }
 
         return (nome + meio + " " + sobrenome).trim();
+    }
+
+    /**
+     * Gera uma senha randômica e que atende aos critérios mínimos de segurança.
+     *
+     * @return Senha randômica
+     */
+    private String generatePassword() {
+        return RandomStringUtils.random(7, true, true) + RandomStringUtils.randomNumeric(3);
     }
 }

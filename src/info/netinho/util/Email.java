@@ -17,6 +17,8 @@ import javax.mail.internet.MimeMessage;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import org.apache.commons.collections.iterators.IteratorEnumeration;
+import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail.SimpleEmail;
 
 public class Email {
 
@@ -75,6 +77,21 @@ public class Email {
         msg.saveChanges();
         tr.sendMessage(msg, msg.getAllRecipients());
         tr.close();
+    }
+
+    public void sendSimpleMail(String destinatario, String assunto, String mensagem) throws EmailException {
+        SimpleEmail email = new SimpleEmail();
+
+        email.setDebug(true);
+        email.setHostName(this.server);
+        email.setSmtpPort(this.port);
+        email.setAuthentication(this.user, this.password);
+        email.setStartTLSEnabled(this.starttls);
+        email.setFrom(this.user);
+        email.addTo(destinatario);
+        email.setSubject(assunto);
+        email.setMsg(mensagem);
+        email.send();
     }
 
     public static void sendSimpleMail(String mailSession, String destinatario, String assunto, String mensagem)
