@@ -396,7 +396,7 @@ public class Ldap {
         ldapContext.modifyAttributes(username, mods);
     }
 
-    static public void addttribute(LdapContext ldapContext, String username, String attribute, String value) throws CommunicationException, NamingException {
+    static public void addAttribute(LdapContext ldapContext, String username, String attribute, String value) throws CommunicationException, NamingException {
         ModificationItem[] mods = new ModificationItem[1];
         mods[0] = new ModificationItem(DirContext.ADD_ATTRIBUTE,
                 new BasicAttribute(attribute, value));
