@@ -9,6 +9,7 @@ public class Text {
 
     public static void main(String[] params) {
         System.err.println(info.netinho.util.Text.reduzirNome("RAIMUNDO  FELIX ALVES DE OLIVEIRA", 30));
+        System.err.println(info.netinho.util.Text.generatePassword());
     }
 
     public static boolean hasContent(String s) {
@@ -234,12 +235,28 @@ public class Text {
         return (nome + meio + " " + sobrenome).trim();
     }
 
+    public static boolean validateStrongPassword(String password) {
+        // (/^
+        // (?=.*\d)                //should contain at least one digit
+        // (?=.*[a-z])             //should contain at least one lower case
+        // (?=.*[A-Z])             //should contain at least one upper case
+        // [a-zA-Z0-9]{5,}         //should contain at least 5 from the mentioned characters
+        // $/)
+        // /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{8,})$/
+        return password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{5,})$");
+    }
+
     /**
      * Gera uma senha randômica e que atende aos critérios mínimos de segurança.
      *
      * @return Senha randômica
      */
-    private String generatePassword() {
-        return RandomStringUtils.random(7, true, true) + RandomStringUtils.randomNumeric(3);
+    public static String generatePassword() {
+        String generatedPassword = RandomStringUtils.random(12, true, true);
+        while (!validateStrongPassword(generatedPassword)) {
+            generatedPassword = RandomStringUtils.random(12, true, true);
+        }
+
+        return generatedPassword;
     }
 }

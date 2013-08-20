@@ -7,6 +7,7 @@ package info.netinho.util;
 import java.net.*;
 import java.util.Enumeration;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -218,5 +219,14 @@ public class MacAddress {
 
     public static String getOnlyCode() throws SocketException, UnknownHostException {
         return getOnlyCode(getIP());
+    }
+
+    public static String getRemoteAddress(HttpServletRequest request) {
+        String ipAddress = request.getHeader("X-FORWARDED-FOR");
+        if (ipAddress == null) {
+            ipAddress = request.getRemoteAddr();
+        }
+
+        return ipAddress;
     }
 }
