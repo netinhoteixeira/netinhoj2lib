@@ -19,6 +19,7 @@ import javax.naming.NamingException;
 import org.apache.commons.collections.iterators.IteratorEnumeration;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
+import org.apache.commons.mail.HtmlEmail;
 
 public class Email {
 
@@ -91,6 +92,21 @@ public class Email {
         email.addTo(destinatario);
         email.setSubject(assunto);
         email.setMsg(mensagem);
+        email.send();
+    }
+    
+    public void sendSimpleMailHtml(String destinatario, String assunto, String mensagem) throws EmailException {
+        HtmlEmail email = new HtmlEmail();
+
+        email.setDebug(true);
+        email.setHostName(this.server);
+        email.setSmtpPort(this.port);
+        email.setAuthentication(this.user, this.password);
+        email.setStartTLSEnabled(this.starttls);
+        email.setFrom(this.user);
+        email.addTo(destinatario);
+        email.setSubject(assunto);
+        email.setHtmlMsg(mensagem);
         email.send();
     }
 
