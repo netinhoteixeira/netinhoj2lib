@@ -29,8 +29,20 @@ public class CodigoFederal {
         int d02 = 0;
         String digitado = new String();
 
-        codigo = Number.getOnlyNumbers(codigo);
+        codigo = codigo.replaceAll("\\D+", "");
         int tamanho = codigo.length();
+
+        String padrao;
+        for (int i = 1; i <= 9; i++) {
+            padrao = new String();
+            for (int j = 0; j < tamanho; j++) {
+                padrao += Integer.toString(j);
+            }
+
+            if (codigo.equals(padrao)) {
+                return false;
+            }
+        }
 
         if (tamanho >= 11) {
             _01 = Integer.parseInt(codigo.substring(1, 1));
@@ -71,7 +83,7 @@ public class CodigoFederal {
                 d02 = 0;
             }
 
-            retorno = (digitado.equals(String.valueOf(d01) + String.valueOf(d02))) && (!codigo.equals(Text.replicate('0', tamanho))) && (!codigo.equals(Text.replicate('1', tamanho))) && (!codigo.equals(Text.replicate('2', tamanho))) && (!codigo.equals(Text.replicate('3', tamanho))) && (!codigo.equals(Text.replicate('4', tamanho))) && (!codigo.equals(Text.replicate('5', tamanho))) && (!codigo.equals(Text.replicate('6', tamanho))) && (!codigo.equals(Text.replicate('7', tamanho))) && (!codigo.equals(Text.replicate('8', tamanho))) && (!codigo.equals(Text.replicate('9', tamanho)));
+            retorno = (digitado.equals(String.valueOf(d01) + String.valueOf(d02)));
 
             if ((tipo == 11) || (tipo == 14)) {
                 retorno = (retorno) && (tamanho == tipo);
